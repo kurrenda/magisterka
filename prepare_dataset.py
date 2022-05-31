@@ -6,7 +6,7 @@ import joblib
 from datetime import datetime
 from argparse import ArgumentParser
 
-from utils.gesture_file import GestureFile
+from utils.MediaPipeFileManager import MediaPipeFileManager
 
 
 def capture_gesture():
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.save:
-        gesture_file = GestureFile('coordinates')
+        gesture_file = MediaPipeFileManager('coordinates')
         gesture_file.load_from_images(r'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\photos\*.png')
     else:
         capture_gesture()

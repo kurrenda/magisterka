@@ -19,12 +19,16 @@ success, img = cap.read()
 rows, cols, _ = img.shape
 
 x_medium = int(cols / 2)
-center = int(cols / 2)
-position = 5 #środkowa pozycja
+x_center = int(cols / 2)
+y_medium = int(rows / 2)
+y_center = int(rows / 2)
+x_position = 5 #środkowa pozycja
+y_position = 4
 
-print(x_medium, center)
+print(x_medium, x_center)
 
-ohbot.move(0,position)
+# ohbot.move(0,x_position)
+# ohbot.move(1,y_position)
 
 while True:
     success, img = cap.read()
@@ -39,14 +43,23 @@ while True:
                 cv2.circle(img, (cx,cy), 3, (255,0,255), cv2.FILLED)
 
                 if id == 9:
-                    if cx < center - 30:
-                        if position > 0:
-                            position -= 0.15
-                    elif cx > center + 30:
-                        if position < 10:
-                            position += 0.15
-                print(position)
-                ohbot.move(0,position)
+                    if cx < x_center - 100:
+                        if x_position >= 0.15:
+                            x_position -= 0.15
+                    elif cx > x_center + 100:
+                        if x_position <= 9.45:
+                            x_position += 0.15
+                    print(f'cy {cy}, cx {cx}')
+                    if cy < y_center - 100:
+                        if y_position >= 0.15:
+                            y_position -= 0.15
+                    elif cy > y_center + 100:
+                        if y_position <= 9.45:
+                            y_position += 0.15
+
+                print(y_position)
+                # ohbot.move(1,y_position)
+                # ohbot.move(0,x_position)
 
             mpDraw.draw_landmarks(img, handLms, mpHands.HAND_CONNECTIONS)
 
