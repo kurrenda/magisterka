@@ -66,9 +66,12 @@ class Camera():
         cv2.imshow("Image", self.img)
         cv2.waitKey(1)
 
-    def export_image(self, name, folder, subfolder):
+    def export_image(self, name, folder, subfolder=None):
         img_name = f"{name}.png"
-        cv2.imwrite(f'../data/{folder}/{subfolder}/{img_name}', self.img)
+        if subfolder:
+            cv2.imwrite(f'{folder}/{subfolder}/{img_name}', self.img)
+        else:
+            cv2.imwrite(f'{folder}/{img_name}', self.img)
         print(f"{img_name} written!")
 
     def put_text(self, text):

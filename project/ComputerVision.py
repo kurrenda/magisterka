@@ -10,6 +10,7 @@ from ohbot import ohbot
 from Camera import Camera
 from MediaPipeFactory import MediaPipeCreator
 from MediaPipeFileManager import MediaPipeFileManager
+import config
 
 
 class ComputerVision():
@@ -20,7 +21,7 @@ class ComputerVision():
         self.is_tracking = is_tracking
         self.is_custom_model = False
         self.custom_model = joblib.load(
-            fr'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\models\one_class_model.pkl')
+            f'{config.MODELS_FOLDER_PATH}/one_class_model.pkl')
 
     def start(self):
         mp_hands = self.mediapipe_factory.create_feature('hands')
@@ -30,7 +31,8 @@ class ComputerVision():
             self.camera.set_start_position()
 
         gestures_distances = mp_hands.import_gestures_distances(
-            r'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\photos\*.png',
+            
+            f'{config.CLASSES_PHOTOS_PATH}/*.png',
             mp_hands,
             self.camera
         )
@@ -71,8 +73,7 @@ class ComputerVision():
                             ).reshape(1, -1)
                             prediction = self.custom_model.predict(
                                 test_landmarks)
-                            training_dir = r'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\training_data'
-                            classes = [ item for item in os.listdir(training_dir) if os.path.isdir(os.path.join(training_dir, item)) ]   
+                            classes = [ item for item in os.listdir(config.TRAINING_DATA_PATH) if os.path.isdir(os.path.join(config.TRAINING_DATA_PATH, item)) ]   
                             
                             if prediction == 0:
                                 self.camera.put_text(classes[0])
@@ -86,17 +87,17 @@ class ComputerVision():
 
             key = cv2.waitKey(1)
             if key % 256 == 97:
-                self.camera.export_image('kciuk', 'photos')
+                self.camera.export_image('kciuk', config.CLASSES_PHOTOS_PATH)
             elif key % 256 == 98:
-                self.camera.export_image('otwarta_reka', 'photos')
+                self.camera.export_image('otwarta_reka',  config.CLASSES_PHOTOS_PATH)
             elif key % 256 == 99:
-                self.camera.export_image('piesc', 'photos')
+                self.camera.export_image('piesc',  config.CLASSES_PHOTOS_PATH)
             elif key % 256 == 122:
                 f_name = f'gesture_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}'
-                self.camera.export_image(f_name, 'training_data', 'open')
+                self.camera.export_image(f_name,  config.TRAINING_DATA_PATH, 'open')
             elif key % 256 == 116:
                 f_name = f'gesture_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}'
-                self.camera.export_image(f_name, 'training_data', 'close')
+                self.camera.export_image(f_name, config.TRAINING_DATA_PATH, 'close')
             elif key % 256 == 32:
                 mp_hands.draw_landmarks = not mp_hands.draw_landmarks
             elif key % 256 == 120:

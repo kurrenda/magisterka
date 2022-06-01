@@ -4,6 +4,7 @@ import glob
 import cv2
 import mediapipe as mp
 from datetime import datetime
+import config
 
 
 class MediaPipeFileManager:
@@ -33,7 +34,7 @@ class MediaPipeFileManager:
     }
 
     def __init__(self, name):
-        self.path = fr'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\positions\{name}_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}.csv'
+        self.path = f'{config.LANDMARKS_CSV_FOLDER_PATH}/{name}_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}.csv'
         self._create_csv_file()
 
     def _create_csv_file(self):

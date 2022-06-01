@@ -7,7 +7,7 @@ import mediapipe as mp
 import cv2
 import os
 import numpy as np
-
+import config
 
 class Creator(ABC):
     @abstractmethod
@@ -179,5 +179,5 @@ class MediaPipeHands(Feature):
 
     def train_gesture(self):
         manager = MediaPipeFileManager('train')
-        manager.export_images_to_csv(r'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\training_data\*.png')
+        manager.export_images_to_csv(config.TRAINING_DATA_PATH)
         print('Successfully exported data')
