@@ -1,4 +1,5 @@
 import csv
+import os
 import glob
 import cv2
 import mediapipe as mp
@@ -32,7 +33,7 @@ class MediaPipeFileManager:
     }
 
     def __init__(self, name):
-        self.path = f'./data/positions/{name}_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}.csv'
+        self.path = fr'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\positions\{name}_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}.csv'
         self._create_csv_file()
 
     def _create_csv_file(self):
@@ -44,13 +45,20 @@ class MediaPipeFileManager:
     def _prepare_header(self, header_data):
         def f1(x): return f'{x}_x'
         def f2(x): return f'{x}_y'
-        return [f(x) for x in header_data.keys() for f in (f1, f2)]
+        header = [f(x) for x in header_data.keys() for f in (f1, f2)]
+        header.append('category')
+        return header
 
-    def export_images_to_csv(self, directory_path_pattern):
-        for file in glob.glob(directory_path_pattern):
-            raw_landmarks = MediaPipeFileManager._append_landmarks_positions(
-                file)
-            self.save_to_file(raw_landmarks)
+    def export_images_to_csv(self, directory_path):
+        num = 0
+        for root, dirs, files in os.walk(directory_path):
+            if root != directory_path:
+                for file in glob.glob(f'{root}\*.png'):
+                    raw_landmarks = MediaPipeFileManager._append_landmarks_positions(
+                        file, list_format=True)
+                    raw_landmarks.append(num)
+                    self.save_to_file(raw_landmarks)
+                num += 1
 
     @staticmethod
     def load_from_image(file_path, raw=True, height=None, width=None):
@@ -69,7 +77,7 @@ class MediaPipeFileManager:
         return scaled_data
 
     @staticmethod
-    def _append_landmarks_positions(file_path):
+    def _append_landmarks_positions(file_path, list_format=False):
         img = cv2.flip(cv2.imread(file_path), 1)
 
         mpHands = mp.solutions.hands
@@ -85,7 +93,11 @@ class MediaPipeFileManager:
             for handLms in results.multi_hand_landmarks:
                 raw_landmarks = []
                 for id, lm in enumerate(handLms.landmark):
-                    raw_landmarks.append((lm.x, lm.y))
+                    if list_format:
+                        raw_landmarks.append(lm.x)
+                        raw_landmarks.append(lm.y)
+                    else:
+                        raw_landmarks.append((lm.x, lm.y))
                 if raw_landmarks:
                     return raw_landmarks
 

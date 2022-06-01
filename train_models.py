@@ -4,10 +4,16 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.svm import OneClassSVM
 import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import IsolationForest
 
-data = pd.read_csv('./data/positions/coordinates_2022_03_20_09_22_07_854349.csv', delimiter=';')
 
-X = data.to_numpy()
-clf = OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1).fit(X)
+data = pd.read_csv(r'C:\Users\Rafal\Documents\adv_pyth\magisterka\data\positions\train_2022_06_01_12_58_09_027892.csv', delimiter=';')
+
+X = data.iloc[:,:-1]
+y = data.iloc[:,-1]
+
+neigh = KNeighborsClassifier(n_neighbors=3)
+clf = neigh.fit(X.values, y.values)
 
 joblib.dump(clf, './data/models/one_class_model.pkl', compress=9)

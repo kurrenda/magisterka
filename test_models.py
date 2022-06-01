@@ -4,8 +4,6 @@ import time
 import csv
 import joblib
 import numpy as np
-from tensorflow.keras.models import load_model
-
 
 def test_model(name):
     model = joblib.load(f'./data/models/{name}')
@@ -33,6 +31,7 @@ def test_model(name):
 
                 test_landmarks = np.array(landmarks).reshape(1, -1)
                 prediction = model.predict(test_landmarks)
+                print(prediction)
 
                 if prediction[0] == 1:
                     cv2.putText(img, 'gest', (10,70), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255), 3)
@@ -42,6 +41,7 @@ def test_model(name):
 
 
 def test_model2():
+    from tensorflow.keras.models import load_model
     model = load_model('./data/models/mp/mp_hand_gesture')
     f = open('./data/models/mp/gesture.names', 'r')
     class_names = f.read().split('\n')
@@ -80,8 +80,7 @@ def test_model2():
                 mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
 
             prediction = model.predict([landmarks])
-            classID = np.argmax(prediction)
-            className = class_names[classID]
+            print(prediction)
             cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,
                             1, (0,0,255), 2, cv2.LINE_AA)
 
