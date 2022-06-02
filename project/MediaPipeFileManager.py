@@ -33,8 +33,8 @@ class MediaPipeFileManager:
         'pinky_tip': 20
     }
 
-    def __init__(self, name):
-        self.path = f'{config.LANDMARKS_CSV_FOLDER_PATH}/{name}_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")}.csv'
+    def __init__(self):
+        self.path = f'{config.LANDMARKS_CSV_FOLDER_PATH}/{config.MODEL_FILENAME}.csv'
         self._create_csv_file()
 
     def _create_csv_file(self):

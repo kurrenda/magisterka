@@ -1,6 +1,6 @@
 
 import cv2
-import ohbot
+from ohbot import ohbot
 from datetime import datetime
 from MediaPipeFactory import MediaPipeHands
 
@@ -10,6 +10,7 @@ class Camera():
         self.x_position = 5
         self.y_position = 4
         self.img = self.cap.read()[1]
+        self.ohbot = ohbot
 
     def read_image(self):
         self.img = self.cap.read()[1]
@@ -40,8 +41,8 @@ class Camera():
         cv2.circle(self.img, (cx, cy), 3, (255, 0, 255), cv2.FILLED)
 
     def set_start_position(self):
-        ohbot.move(2, self.x_position)
-        ohbot.move(1, self.y_position)
+        self.ohbot.move(2, self.x_position)
+        self.ohbot.move(1, self.y_position)
 
     def fix_position(self, id, cx, cy):
         if id == MediaPipeHands.MIDDLE_FINGER_MCP:
@@ -58,9 +59,9 @@ class Camera():
                 if self.y_position <= 9.45:
                     self.y_position += 0.15
 
-        ohbot.wait(2)
-        ohbot.move(0, self.camera.x_position, 2)
-        ohbot.move(1, self.camera.y_position, 2)
+        self.ohbot.wait(2)
+        self.ohbot.move(0, self.camera.x_position, 2)
+        self.ohbot.move(1, self.camera.y_position, 2)
 
     def show(self):
         cv2.imshow("Image", self.img)
@@ -75,4 +76,4 @@ class Camera():
         print(f"{img_name} written!")
 
     def put_text(self, text):
-        cv2.putText(self.img, text, (10,70), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255), 3)
+        cv2.putText(self.img, text, (10,70), cv2.FONT_ITALIC, 2, (255,0,255), 3)

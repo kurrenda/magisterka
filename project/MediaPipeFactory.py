@@ -9,6 +9,7 @@ import os
 import numpy as np
 import config
 
+
 class Creator(ABC):
     @abstractmethod
     def create_feature(self):
@@ -62,6 +63,16 @@ class MediaPipeBackground(Feature):
             bg_image[:] = self.BG_COLOR
 
         output_image = np.where(condition, image, bg_image)
+        return output_image
+
+    def cartoon_background(self, image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image = cv2.medianBlur(image, 1)
+        edge = cv2.adaptiveThreshold(
+            gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 9)
+        color = cv2.bilateralFilter(image, 9, 200, 200)
+        output_image = cv2.bitwise_and(color, color, mask=edge)
+
         return output_image
 
 
@@ -148,7 +159,8 @@ class MediaPipeHands(Feature):
                 height=camera.height,
                 width=camera.width
             )
-            imported_gestures[os.path.basename(file)] = mp_hands.normalize_coordinates(
+            base = os.path.basename(file)
+            imported_gestures[os.path.splitext(base)[0]] = mp_hands.normalize_coordinates(
                 trained_gesture_landmarks)
         return imported_gestures
 
@@ -157,6 +169,9 @@ class MediaPipeHands(Feature):
         for key, distance in gestures_distances.items():
             error = mp_hands.get_error(own_gesture_distance, distance)
             errors[key] = error
+
+        if not errors:
+            return None
         min_error_name = min(errors, key=errors.get)
 
         tolerance = 0.6
