@@ -1,10 +1,12 @@
 
 import cv2
 from ohbot import ohbot
-from datetime import datetime
 from MediaPipeFactory import MediaPipeHands
 
 class Camera():
+    START_X_POS = 5
+    START_Y_POS = 5
+
     def __init__(self):
         self.cap = cv2.VideoCapture(0)
         self.x_position = 5
@@ -41,8 +43,9 @@ class Camera():
         cv2.circle(self.img, (cx, cy), 3, (255, 0, 255), cv2.FILLED)
 
     def set_start_position(self):
-        self.ohbot.move(2, self.x_position)
-        self.ohbot.move(1, self.y_position)
+        print("CAMERA - start position")
+        self.ohbot.move(0, self.START_X_POS, 1)
+        self.ohbot.move(1, self.START_Y_POS, 1)
 
     def fix_position(self, id, cx, cy):
         if id == MediaPipeHands.MIDDLE_FINGER_MCP:
@@ -59,9 +62,8 @@ class Camera():
                 if self.y_position <= 9.45:
                     self.y_position += 0.15
 
-        self.ohbot.wait(2)
-        self.ohbot.move(0, self.camera.x_position, 2)
-        self.ohbot.move(1, self.camera.y_position, 2)
+        self.ohbot.move(0, self.x_position, 1)
+        self.ohbot.move(1, self.y_position, 1)
 
     def show(self):
         cv2.imshow("Image", self.img)

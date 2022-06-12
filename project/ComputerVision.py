@@ -1,14 +1,10 @@
 import cv2
-import mediapipe as mp
-import time
-import glob
 from datetime import datetime
 import os
 import numpy as np
 import joblib
 from Camera import Camera
 from MediaPipeFactory import MediaPipeCreator
-from MediaPipeFileManager import MediaPipeFileManager
 import config
 
 
@@ -21,6 +17,7 @@ class ComputerVision():
         self.is_custom_model = False
         self.is_background = False
         self.is_cartoon = False
+        self.is_filter = True
         self.last_gesture = None
         self.custom_model = joblib.load(
             f'{config.MODELS_FOLDER_PATH}/{config.MODEL_FILENAME}.pkl')
@@ -29,8 +26,7 @@ class ComputerVision():
         self.mp_background = self.mediapipe_factory.create_feature(
             'background')
 
-        if self.is_tracking:
-            self.camera.set_start_position()
+        self.camera.set_start_position()
 
         self.gestures_distances = None
         self.load_gestures_distances()

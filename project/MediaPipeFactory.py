@@ -110,18 +110,6 @@ class MediaPipeHands(Feature):
 
     @staticmethod
     def normalize_coordinates(coords):
-        key_points_available = [
-            MediaPipeHands.MIDDLE_FINGER_MCP,
-            MediaPipeHands.WRIST,
-            MediaPipeHands.THUMB_TIP,
-            MediaPipeHands.INDEX_FINGER_TIP,
-            MediaPipeHands.MIDDLE_FINGER_TIP,
-            MediaPipeHands.RING_FINGER_TIP,
-            MediaPipeHands.PINKY_TIP,
-            MediaPipeHands.INDEX_FINGER_MCP,
-            MediaPipeHands.RING_FINGER_MCP,
-            MediaPipeHands.PINKY_MCP,
-        ]
         hand_size = MediaPipeHands.calculate_distance(
             coords[MediaPipeHands.WRIST][0],
             coords[MediaPipeHands.WRIST][1],

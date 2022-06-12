@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 import os
 import glob
-import csv
 import joblib
 from datetime import datetime
 from argparse import ArgumentParser

@@ -1,9 +1,7 @@
 from PIL import Image, ImageTk
 import tkinter as tk
-import argparse
-import datetime
+from tkinter import messagebox
 import cv2
-import os
 import config
 from ComputerVision import ComputerVision
 
@@ -38,7 +36,7 @@ class Application:
                          command=self.save_gesture_otwarta)
         btn2 = tk.Button(self.root, text="Piesc",
                          command=self.save_gesture_piesc)
-        c1 = tk.Checkbutton(bottomframe, text='Dekoracje ekranu',
+        c1 = tk.Checkbutton(bottomframe, text='Filtry sterowane gestami',
                             variable=self.isLandmark, command=self.set_landmarks)
         c2 = tk.Checkbutton(bottomframe, text='Włącz śledzenie ręki',
                             variable=self.isTracking, command=self.set_tracking)
@@ -66,8 +64,8 @@ class Application:
 
     def save_gesture_kciuk(self):
         if self.cv.mp_hands.draw_landmarks:
-            tk.messagebox.showwarning(
-                title='Zapis gestu - niepowodzenie', message="Aby zapisać gest, wyłącz dekoracje"
+            messagebox.showwarning(
+                title='Zapis gestu - niepowodzenie', message="Aby zapisać gest, wyłącz filtry"
             )
             return
         self.cv.camera.export_image('kciuk', config.CLASSES_PHOTOS_PATH)
@@ -75,8 +73,8 @@ class Application:
 
     def save_gesture_otwarta(self):
         if self.cv.mp_hands.draw_landmarks:
-            tk.messagebox.showwarning(
-                title='Zapis gestu - niepowodzenie', message="Aby zapisać gest, wyłącz dekoracje"
+            messagebox.showwarning(
+                title='Zapis gestu - niepowodzenie', message="Aby zapisać gest, wyłącz filtry"
             )
             return
         self.cv.camera.export_image('otwarta_reka', config.CLASSES_PHOTOS_PATH)
@@ -84,14 +82,17 @@ class Application:
 
     def save_gesture_piesc(self):
         if self.cv.mp_hands.draw_landmarks:
-            tk.messagebox.showwarning(
-                title='Zapis gestu - niepowodzenie', message="Aby zapisać gest, wyłącz dekoracje"
+            messagebox.showwarning(
+                title='Zapis gestu - niepowodzenie', message="Aby zapisać gest, wyłącz filtry"
             )
             return
         self.cv.camera.export_image('piesc', config.CLASSES_PHOTOS_PATH)
         self.cv.load_gestures_distances()
 
     def set_landmarks(self):
+        self.cv.is_background = False
+        self.cv.is_cartoon = False
+        self.cv.is_filter = self.isLandmark.get()
         self.cv.mp_hands.draw_landmarks = self.isLandmark.get()
 
     def set_tracking(self):
@@ -99,7 +100,7 @@ class Application:
             self.cv.is_tracking = self.isTracking.get()
         else:
             self.isTracking.set(False)
-            tk.messagebox.showwarning(
+            messagebox.showwarning(
                 title='Ohbot - niepowodzenie', message="Nie wykryto urządzenia ohbot"
             )
             return
@@ -108,6 +109,7 @@ class Application:
         self.cv.is_custom_model = self.isCustom.get()
 
     def destructor(self):
+        self.cv.camera.set_start_position()
         self.root.destroy()
         self.cv.camera.cap.release()
         cv2.destroyAllWindows()

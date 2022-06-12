@@ -3,7 +3,6 @@ import os
 import glob
 import cv2
 import mediapipe as mp
-from datetime import datetime
 import config
 
 
