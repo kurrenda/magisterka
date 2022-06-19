@@ -48,17 +48,23 @@ class Camera():
         self.ohbot.move(1, self.START_Y_POS, 1)
 
     def fix_position(self, id, cx, cy):
+        norm_x = cx / self.width
+        norm_y = cy / self.height
+
+        norm_width_center = self.width_center / self.width
+        norm_height_center = self.height_center / self.height
+
         if id == MediaPipeHands.MIDDLE_FINGER_MCP:
-            if cx < self.width_center - 100:
+            if norm_x < norm_width_center - 0.15:
                 if self.x_position > 0:
                     self.x_position -= 0.15
-            elif cx > self.width_center + 100:
+            elif norm_x > norm_width_center + 0.15:
                 if self.x_position < 10:
                     self.x_position += 0.15
-            if cy < self.height_center - 100:
+            if norm_y < norm_height_center - 0.15:
                 if self.y_position >= 0.15:
                     self.y_position -= 0.15
-            elif cy > self.height_center + 100:
+            elif norm_y > norm_height_center + 0.15:
                 if self.y_position <= 9.45:
                     self.y_position += 0.15
 
